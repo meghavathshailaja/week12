@@ -77,4 +77,4 @@ def test_valid_input(setup_teardown):
 
     # Verify greeting message
     body_text = driver.find_element(By.TAG_NAME, "body").text
-    assert "Hello, Usha! Welcome to the website" in body_text, f"Greeting not found or incorrect: {body_text}"
+    assert "Hello, Sailaja! Welcome to the website" in body_text, f"Greeting not found or incorrect: {body_text}"

@@ -16,7 +16,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                echo "Build Docker Image"
+                echo "Building Docker Image"
                 bat 'docker build -t seleniumdemoapp:v1 .'
             }
         }
@@ -24,6 +24,7 @@ pipeline {
         stage('Docker Login') {
             steps {
                 echo "Logging in to Docker Hub"
+
                 withCredentials([
                     usernamePassword(
                         credentialsId: 'dockerhub-credentials',
@@ -31,13 +32,15 @@ pipeline {
                         passwordVariable: 'DOCKER_PASS'
                     )
                 ]) {
-                    bat 'docker login -u "%DOCKER_USER%" --password-stdin'
+                    bat 'echo %DOCKER_PASS%| docker login -u "%DOCKER_USER%" --password-stdin'
                 }
             }
         }
 
         stage('Push Docker Image to Docker Hub') {
             steps {
+                echo "Pushing Docker Image to Docker Hub"
+
                 bat 'docker tag seleniumdemoapp:v1 sailayasample/seleniumtestimage:v1'
                 bat 'docker push sailayasample/seleniumtestimage:v1'
             }
@@ -45,6 +48,8 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
+                echo "Deploying Application to Kubernetes"
+
                 bat 'kubectl apply -f deployment.yaml --validate=false'
                 bat 'kubectl apply -f service.yaml'
             }
